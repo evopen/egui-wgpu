@@ -6,7 +6,7 @@ layout(set = 0, binding = 0) uniform UniformBuffer {
 
 layout(location = 0) in vec2 in_pos;
 layout(location = 1) in vec2 in_uv;
-layout(location = 2) in vec4 in_color;
+layout(location = 2) in uint in_color;
 
 layout(location = 0) out vec2 out_uv;
 layout(location = 1) out vec4 out_color;
@@ -20,6 +20,7 @@ vec3 linear_from_srgb(vec3 srgb) {
 
 void main() {
     gl_Position = vec4(2.0 * in_pos.x / screen_size.x - 1.0, 1.0 - 2.0 * in_pos.y / screen_size.y, 0.0, 1.0);
+    vec4 color = vec4(in_color & 0xFFu, (in_color >> 8) & 0xFFu, (in_color >> 16) & 0xFFu, (in_color >> 24) & 0xFFu);
+    out_color = vec4(linear_from_srgb(color.rgb), color.a / 255.0);
     out_uv = in_uv;
-    out_color = in_color;
 }

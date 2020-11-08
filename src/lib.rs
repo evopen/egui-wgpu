@@ -11,7 +11,7 @@ use wgpu::util::DeviceExt;
 struct Vertex {
     position: [f32; 2],
     uv: [f32; 2],
-    color: [f32; 4],
+    color: [u8; 4],
 }
 
 struct Buffer {
@@ -184,7 +184,6 @@ impl RenderPass {
             render_pass.set_bind_group(0, &self.common_bind_group, &[]);
             render_pass.set_bind_group(1, self.texture_bind_group.as_ref().unwrap(), &[]);
             let index_count = self.index_buffer[i].size / std::mem::size_of::<u32>();
-            log::debug!("draw {} vertices", index_count);
             render_pass.draw_indexed(0..index_count as u32, 0, 0..1);
         }
     }
@@ -261,12 +260,7 @@ impl RenderPass {
                 .map(|v| Vertex {
                     position: [v.pos.x, v.pos.y],
                     uv: [v.uv.x, v.uv.y],
-                    color: [
-                        v.color.r() as f32 / 255.0,
-                        v.color.g() as f32 / 255.0,
-                        v.color.b() as f32 / 255.0,
-                        v.color.a() as f32 / 255.0,
-                    ],
+                    color: [v.color.r(), v.color.g(), v.color.b(), v.color.a()],
                 })
                 .collect();
 
